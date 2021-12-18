@@ -26,12 +26,12 @@ object ShopListRepositoryImpl: ShopListRepository {
     }
 
     override fun getShopItem(shopItemId: Int): ShopItem {
-        return shopList.find {
-            it.id ==  shopItemId
-        } ?: throw RuntimeException("Element with id $shopItemId not found")
+        return shopList.find { // этот метод найдет элемент по его id и вернет его
+            it.id ==  shopItemId // если возвращаемый тип данных никак не может быть null, то бросаем исключение
+        } ?: throw RuntimeException("Element with id $shopItemId not found") // если элемент не найден с таким id, то приложение упадет
     }
 
     override fun getShopList(): List<ShopItem> {
-        return shopList.toList()
+        return shopList.toList() // возвращаем копию shopList
     }
 }
