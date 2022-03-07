@@ -1,6 +1,9 @@
+
 <resources>
-    <string name="app_name">MyShoppingList</string>
+    <string name="app_name">My Shopping List</string>
     <string name="item_name">Name:</string>
     <string name="item_count">Count:</string>
     <string name="button_save">Save</string>
+    <string name="error_input_count">Invalid count</string>
+    <string name="error_input_name">Invalid name</string>
 </resources>

@@ -2,11 +2,11 @@ package com.example.myshoppinglist.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,15 +18,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupRecyclerView()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.shopList.observe(this){
-           shopListAdapter.submitList(it) // в адаптер вставим новый лист
+        viewModel.shopList.observe(this) {
+            shopListAdapter.submitList(it) // в адаптер вставим новый лист
             //вычисления адаптер делает в отдельном потоке
+        }
+
+        val buttonAddItem = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAddItem.setOnClickListener {
+            val intent = ShopItemActivity.newIntentItemAdd(this)
+            startActivity(intent)
         }
     }
 
     private fun setupRecyclerView() { //настраиваем RecyclerView
         val rvShopList = findViewById<RecyclerView>(R.id.rv_shop_list) //создаем ссылку на RV
-        with (rvShopList){
+        with(rvShopList) {
             shopListAdapter = ShopListAdapter() // создаем адаптер
             adapter = shopListAdapter // устанавлием адаптер у RecyclerView
 
@@ -69,7 +75,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         shopListAdapter.onShopItemClickListener = {
-            Log.d("MainActivity", it.toString())
+            val intent = ShopItemActivity.newIntentItemEdit(this, it.id)
+            startActivity(intent)
         }
     }
 
