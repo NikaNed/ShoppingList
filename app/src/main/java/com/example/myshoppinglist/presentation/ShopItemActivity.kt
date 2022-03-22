@@ -1,122 +1,32 @@
 package com.example.myshoppinglist.presentation
 
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.domain.ShopItem
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
-
-    private lateinit var viewModel: ShopItemViewModel
-
-    private lateinit var tilName: TextInputLayout // ссылки на view
-    private lateinit var tilCount: TextInputLayout
-    private lateinit var etName: TextInputEditText
-    private lateinit var etCount: TextInputEditText
-    private lateinit var buttonSave: Button
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINDED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_shop_item) //устанавливаем контент
-        parseIntent() //получаем все данные из intent
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java] //инициализируем vM
-        initViews() //инициализируем все view элементы
-        addTextChangedListener() //добавляем слушатели ввода текста
-        launchRightMode() //запускаем правильный режим экрана
-        observeViewModel() //подписываемся на все объекты viewModel
-    }
-    private fun observeViewModel() {
-        viewModel.errorInputName.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_input_name)
-            } else {
-                null
-            }
-            tilName.error = message
-        }
-        viewModel.errorInputCount.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_input_count)
-            } else {
-                null
-            }
-            tilCount.error = message
-        }
-        viewModel.shouldCloseScreen.observe(this) {
-            finish()
+        setContentView(R.layout.activity_shop_item)
+        parseIntent() // проверяем параметры в intent
+        if (savedInstanceState == null) {
+            launchRightMode() // запускаем фрагмент в нужном режиме
         }
     }
 
-    private fun addTextChangedListener() {
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetErrorInputName()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
-
-        etCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetErrorInputCount()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
+    override fun onEditingFinished() {
+        finish()
     }
 
-    private fun launchRightMode() {
-        when (screenMode) {
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
-        }
-    }
-
-    private fun launchEditMode() {
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this) {
-            etName.setText(it.name)
-            etCount.setText(it.count.toString())
-        }
-        buttonSave.setOnClickListener {
-            viewModel.editShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-    private fun launchAddMode() {
-        buttonSave.setOnClickListener {
-            viewModel.addShopItem(etName.text?.toString(), etCount.text?.toString())
-        }
-    }
-
-    private fun initViews() { // инициализировали view
-        tilName = findViewById(R.id.til_name)
-        tilCount = findViewById(R.id.til_count)
-        etName = findViewById(R.id.et_name)
-        etCount = findViewById(R.id.et_count)
-        buttonSave = findViewById(R.id.save_button)
-    }
-
-    private fun parseIntent() { //проверяем, чтобы были переданы все необходимые параметры
+    private fun parseIntent() {
         if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
             throw RuntimeException("Param screen mode absent")
         }
@@ -125,13 +35,23 @@ class ShopItemActivity : AppCompatActivity() {
             throw RuntimeException("Unknown screen mode $mode")
         }
         screenMode = mode
-        if (screenMode == MODE_EDIT) { //если мы находимся в режиме редактирования, то проверим
-            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) { //есть ли параметр EXTRA_SHOP_ITEM_ID
-                throw RuntimeException("Param shop item id is absent") //если нет, то ошибку кидаем
+        if (screenMode == MODE_EDIT) {
+            if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
+                throw RuntimeException("Param shop item id is absent")
             }
             shopItemId = intent.getIntExtra(EXTRA_SHOP_ITEM_ID, ShopItem.UNDEFINDED_ID)
-        //если есть, то получим значение  shopItemId
         }
+    }
+
+    private fun launchRightMode() {
+        val fragment = when (screenMode) { // когда режим подходящий, получаем экземпляр фрагмента
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId) //возвращаем экземпляр фрагмента
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("Unknown screen mode $screenMode")
+        }
+        supportFragmentManager.beginTransaction() // устанавливаем фрагмент в контейнер
+            .replace(R.id.shop_item_container, fragment) // добвляем фрагмент в данный контейнер
+            .commit() // запускает транзакцию на выполнение
     }
 
     companion object {
@@ -141,16 +61,15 @@ class ShopItemActivity : AppCompatActivity() {
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_UNKNOWN = ""
 
-        fun newIntentItemAdd(context: Context): Intent {
+        fun newIntentAddItem(context: Context) : Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
             return intent
         }
-
-        fun newIntentItemEdit(context: Context, shopItemId: Int): Intent {
+        fun newIntentEditItem(context: Context, ShopItemId: Int): Intent { //запускает экран в режиме редактирования
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
+            intent.putExtra(EXTRA_SHOP_ITEM_ID, ShopItemId) //обязательный параметр для редактирования – это id элемента
             return intent
         }
     }
