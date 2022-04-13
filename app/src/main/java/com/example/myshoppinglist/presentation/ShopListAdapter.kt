@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.ListAdapter
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.databinding.ItemShopDisabledBinding
 import com.example.myshoppinglist.databinding.ItemShopEnabledBinding
 import com.example.myshoppinglist.domain.ShopItem
 
 
-class ShopListAdapter : ListAdapter<ShopItem,
+class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
         ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null // функция принимает ShopItem и
