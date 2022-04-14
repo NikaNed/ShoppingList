@@ -15,7 +15,6 @@ class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
         ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null // функция принимает ShopItem и
-
     // ничего не возращает
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
@@ -41,17 +40,15 @@ class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
             onShopItemLongClickListener?.invoke(shopItem)
             true // можем вызвать функцию только в том случае, если переменная не равна null
         }
-        binding.root.setOnClickListener() {
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)
         }
         when (binding) {
             is ItemShopDisabledBinding -> {
-                binding.tvName.text = shopItem.name
-                binding.tvCount.text = shopItem.count.toString()
+                binding.shopItem = shopItem
             }
             is ItemShopEnabledBinding -> {
-                binding.tvName.text = shopItem.name
-                binding.tvCount.text = shopItem.count.toString()
+                binding.shopItem = shopItem
             }
         }
     }
