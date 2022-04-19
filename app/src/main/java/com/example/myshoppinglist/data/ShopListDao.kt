@@ -13,7 +13,8 @@ interface ShopListDao {
     fun getShopList(): LiveData<List<ShopItemDbModel>> //метод запрашивает данные из базы
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addShopItem(shopItemDbModel: ShopItemDbModel)
+    fun addShopItem(shopItemDbModel: ShopItemDbModel) //метод не только добавляет элемент, но и
+    // редактирует его
 
     @Query("DELETE FROM shop_items WHERE id =:shopItemId" )
     fun deleteShopItem(shopItemId: Int)

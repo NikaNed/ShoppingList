@@ -1,55 +1,41 @@
 package com.example.myshoppinglist.data
 
+import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.domain.ShopListRepository
 import kotlin.random.Random
 
-object ShopListRepositoryImpl: ShopListRepository {
+class ShopListRepositoryImpl(application: Application) : ShopListRepository {
 
-    private val shopList = mutableListOf<ShopItem>()
-    private val shopListLD = MutableLiveData<List<ShopItem>>()
+    private val shopListDao = AppDatabase.getInstance(application).shopListDao() //создаем экземпляр
 
-    private var autoIncrementId = 0
-
-    init {
-        for (i in 0 until 10) {
-            val item = ShopItem("Name $i", i, enabled = Random.nextBoolean())
-            addShopItem(item)
-        }
-    }
+    // интерфейса Dao
+    private val mapper = ShopListMapper() //добавляем mapper
 
     override fun addShopItem(shopItem: ShopItem) {
-        if (shopItem.id == ShopItem.UNDEFINDED_ID){ //если при добавлении нового элемента id не найден, то создаем id//
-            shopItem.id = autoIncrementId++
-        }
-       shopList.add(shopItem) //в противном случае просто добавим объект в коллекцию
-        updateList()
+        shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
     }
 
     override fun deleteShopItem(shopItem: ShopItem) {
-        shopList.remove(shopItem)
-        updateList()
+        shopListDao.deleteShopItem(shopItem.id)
     }
 
     override fun editShopItem(shopItem: ShopItem) {
-        val oldItem = getShopItem(shopItem.id) // чтобы отредактировать элемент, сначала получаем id старого объекта
-        shopList.remove(oldItem) // затем удалаяем его из коллекции
-        addShopItem(shopItem) // и добавляем новый объект на его место
+        shopListDao.addShopItem(mapper.mapEntityToDbModel(shopItem))
     }
 
     override fun getShopItem(shopItemId: Int): ShopItem {
-        return shopList.find { // этот метод найдет элемент по его id и вернет его
-            it.id ==  shopItemId // если возвращаемый тип данных никак не может быть null, то бросаем исключение
-        } ?: throw RuntimeException("Element with id $shopItemId not found") // если элемент не найден с таким id, то приложение упадет
+        val dbModel = shopListDao.getShopItem(shopItemId)
+        return mapper.mapDbModelToEntity(dbModel) //возвращаем значение в виде объекта domain-слоя
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {
-        return shopListLD
-    }
-
-    private fun updateList (){
-        shopListLD.value = shopList.toList() // возвращаем копию shopList
+        return Transformations.map(shopListDao.getShopList()) {
+            mapper.mapDbModelListToListEntity(it)
+        }
     }
 }
