@@ -1,18 +1,20 @@
 package com.example.myshoppinglist.presentation
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myshoppinglist.data.ShopListRepositoryImpl
 import com.example.myshoppinglist.domain.AddShopItemUseCase
 import com.example.myshoppinglist.domain.EditShopItemUseCase
 import com.example.myshoppinglist.domain.GetShopItemUseCase
 import com.example.myshoppinglist.domain.ShopItem
-import kotlin.Boolean as Boolean
+import kotlinx.coroutines.launch
 
-class ShopItemViewModel : ViewModel() {
+class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ShopListRepositoryImpl
+    private val repository = ShopListRepositoryImpl(application)
 
     private val getShopItemUseCase = GetShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
@@ -38,8 +40,10 @@ class ShopItemViewModel : ViewModel() {
 
 
     fun getShopItem(shopItemId: Int) { //принимает в качестве параметра shopItemId
-        val item = getShopItemUseCase.getShopItem(shopItemId) // получаем элемент
-        _shopItem.value = item // устанавлием его в LiveData
+        viewModelScope.launch {
+            val item = getShopItemUseCase.getShopItem(shopItemId) // получаем элемент
+            _shopItem.value = item // устанавлием его в LiveData
+        }
     }
 
     fun addShopItem(inputName: String?, inputCount: String?) {
@@ -47,21 +51,26 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldsVailed = validateInput(name, count)
         if (fieldsVailed) { // если поля валидные, то добаялем новый элемент
-            val shopItem = ShopItem(name, count, true) // вот он новый элемент
-            addShopItemUseCase.addShopItem(shopItem)
-            finishWork()
+            viewModelScope.launch {
+                val shopItem = ShopItem(name, count, true) // вот он новый элемент
+                addShopItemUseCase.addShopItem(shopItem)
+                finishWork()
+            }
         }
     }
 
     fun editShopItem(inputName: String?, inputCount: String?) {
+
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         val fieldsVailed = validateInput(name, count)
         if (fieldsVailed) {
             _shopItem.value?.let {
-                val item = it.copy(name = name, count = count)
-                editShopItemUseCase.editShopItem(item)
-                finishWork()
+                viewModelScope.launch {
+                    val item = it.copy(name = name, count = count)
+                    editShopItemUseCase.editShopItem(item)
+                    finishWork()
+                }
             }
         }
     }
