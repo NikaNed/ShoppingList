@@ -1,22 +1,37 @@
 package com.example.myshoppinglist.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.domain.ShopListRepository
+import kotlin.random.Random
 
 object ShopListRepositoryImpl: ShopListRepository {
 
     private val shopList = mutableListOf<ShopItem>()
+    private val shopListLD = MutableLiveData<List<ShopItem>>()
+
     private var autoIncrementId = 0
+
+    init {
+        for (i in 0 until 1000) {
+            val item = ShopItem("Name $i", i, enabled = Random.nextBoolean())
+            addShopItem(item)
+        }
+
+    }
 
     override fun addShopItem(shopItem: ShopItem) {
         if (shopItem.id == ShopItem.UNDEFINDED_ID){ //если при добавлении нового элемента id не найден, то создаем id//
             shopItem.id = autoIncrementId++
         }
        shopList.add(shopItem) //в противном случае просто добавим объект в коллекцию
+        updateList()
     }
 
     override fun deleteShopItem(shopItem: ShopItem) {
         shopList.remove(shopItem)
+        updateList()
     }
 
     override fun editShopItem(shopItem: ShopItem) {
@@ -31,7 +46,11 @@ object ShopListRepositoryImpl: ShopListRepository {
         } ?: throw RuntimeException("Element with id $shopItemId not found") // если элемент не найден с таким id, то приложение упадет
     }
 
-    override fun getShopList(): List<ShopItem> {
-        return shopList.toList() // возвращаем копию shopList
+    override fun getShopList(): LiveData<List<ShopItem>> {
+        return shopListLD
+    }
+
+    private fun updateList (){
+        shopListLD.value = shopList.toList() // возвращаем копию shopList
     }
 }
