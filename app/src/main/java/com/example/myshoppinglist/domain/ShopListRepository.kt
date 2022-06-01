@@ -2,7 +2,7 @@ package com.example.myshoppinglist.domain
 
 import androidx.lifecycle.LiveData
 
-interface ShopListRepository {
+interface ShopListRepository{
 
     suspend fun addShopItem(shopItem: ShopItem)
     suspend fun deleteShopItem(shopItem: ShopItem)

@@ -7,13 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.domain.ShopListRepository
+import javax.inject.Inject
 import kotlin.random.Random
 
-class ShopListRepositoryImpl(application: Application) : ShopListRepository {
+class ShopListRepositoryImpl @Inject constructor(application: Application) : ShopListRepository {
 
     private val shopListDao = AppDatabase.getInstance(application).shopListDao() //создаем экземпляр
-
     // интерфейса Dao
+
     private val mapper = ShopListMapper() //добавляем mapper
 
     override suspend fun addShopItem(shopItem: ShopItem) {
