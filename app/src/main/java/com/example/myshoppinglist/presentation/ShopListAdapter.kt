@@ -1,20 +1,17 @@
 package com.example.myshoppinglist.presentation
 
-import android.content.Context
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ListAdapter
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.example.myshoppinglist.R
-import com.example.myshoppinglist.domain.ShopItem
-import com.example.myshoppinglist.presentation.ShopListAdapter.*
 
-class ShopListAdapter: androidx.recyclerview.widget.ListAdapter<ShopItem,
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import com.example.myshoppinglist.R
+import com.example.myshoppinglist.databinding.ItemShopDisabledBinding
+import com.example.myshoppinglist.databinding.ItemShopEnabledBinding
+import com.example.myshoppinglist.domain.ShopItem
+
+
+class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
         ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null // функция принимает ShopItem и
@@ -27,22 +24,33 @@ class ShopListAdapter: androidx.recyclerview.widget.ListAdapter<ShopItem,
             VIEW_TYPE_ENABLE -> R.layout.item_shop_enabled
             else -> throw RuntimeException("Unknown view type $viewType")
         }
-        val view = LayoutInflater.from(parent.context).inflate(layout,parent,false)
-        return ShopItemViewHolder(view)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(
+            LayoutInflater.from(parent.context),
+            layout,
+            parent,
+            false
+        )
+        return ShopItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ShopItemViewHolder, position: Int) {
         val shopItem = getItem(position)
-        viewHolder.view.setOnLongClickListener {
+        val binding = viewHolder.binding
+        binding.root.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
-        true // можем вызвать функцию только в том случае, если переменная не равна null
+            true // можем вызвать функцию только в том случае, если переменная не равна null
         }
-        viewHolder.view.setOnClickListener() {
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)
+        }
+        when (binding) {
+            is ItemShopDisabledBinding -> {
+                binding.shopItem = shopItem
             }
-
-        viewHolder.tvName.text = shopItem.name
-        viewHolder.tvCount.text = shopItem.count.toString()
+            is ItemShopEnabledBinding -> {
+                binding.shopItem = shopItem
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -51,7 +59,7 @@ class ShopListAdapter: androidx.recyclerview.widget.ListAdapter<ShopItem,
         else VIEW_TYPE_DISABLE
     }
 
-    companion object{
+    companion object {
         const val VIEW_TYPE_ENABLE = 100
         const val VIEW_TYPE_DISABLE = 101
         const val MAX_POOL_SIZE = 15
