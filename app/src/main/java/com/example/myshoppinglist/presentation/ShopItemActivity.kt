@@ -7,10 +7,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.domain.ShopItem
+import javax.inject.Inject
 
 class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
+
     private var screenMode = MODE_UNKNOWN
+
     private var shopItemId = ShopItem.UNDEFINDED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,15 +64,22 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_UNKNOWN = ""
 
-        fun newIntentAddItem(context: Context) : Intent {
+        fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
             return intent
         }
-        fun newIntentEditItem(context: Context, ShopItemId: Int): Intent { //запускает экран в режиме редактирования
+
+        fun newIntentEditItem(
+            context: Context,
+            ShopItemId: Int
+        ): Intent { //запускает экран в режиме редактирования
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, ShopItemId) //обязательный параметр для редактирования – это id элемента
+            intent.putExtra(
+                EXTRA_SHOP_ITEM_ID,
+                ShopItemId
+            ) //обязательный параметр для редактирования – это id элемента
             return intent
         }
     }
