@@ -3,10 +3,10 @@
     package="com.example.myshoppinglist">
 
     <application
+        android:name=".presentation.ShopListApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".presentation.ShopListApp"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyShoppingList">
@@ -23,9 +23,12 @@
         <activity
             android:name=".presentation.ShopItemActivity"
             android:windowSoftInputMode="adjustResize">
-
         </activity>
 
+        <provider
+            android:name=".data.ShopListProvider"
+            android:authorities="com.example.myshoppinglist"
+            android:exported="true" />
     </application>
 
 </manifest>
