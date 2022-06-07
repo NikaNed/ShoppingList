@@ -20,8 +20,14 @@ interface ShopListDao {
     suspend fun addShopItem(shopItemDbModel: ShopItemDbModel) //метод не только добавляет элемент, но и
     // редактирует его
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addShopItemProvider(shopItemDbModel: ShopItemDbModel)
+
     @Query("DELETE FROM shop_items WHERE id =:shopItemId")
     suspend fun deleteShopItem(shopItemId: Int)
+
+    @Query("DELETE FROM shop_items WHERE id =:shopItemId")
+    fun deleteShopItemProvider(shopItemId: Int): Int
 
     @Query("SELECT*FROM shop_items WHERE id=:shopItemId LIMIT 1")
     suspend fun getShopItem(shopItemId: Int): ShopItemDbModel
