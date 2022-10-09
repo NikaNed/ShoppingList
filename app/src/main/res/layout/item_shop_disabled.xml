@@ -13,9 +13,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="0dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="1dp"
             app:cardUseCompatPadding="true"
@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#33BB86FC"
+                android:background="@color/hot_pink_dark"
                 android:orientation="horizontal"
                 android:padding="16dp">
 
@@ -40,7 +40,7 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:text="Салфетки" />
+                    tools:text="Tomatoes" />
 
                 <TextView
                     android:id="@+id/tv_count"
@@ -53,7 +53,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:verticalScrollbarPosition="defaultPosition"
-                    tools:text="1" />
+                    tools:text="5" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

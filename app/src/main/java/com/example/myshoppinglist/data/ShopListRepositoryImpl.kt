@@ -34,5 +34,6 @@ class ShopListRepositoryImpl @Inject constructor(
             mapper.mapDbModelListToListEntity(it)
         }
     }
+
 }
 
