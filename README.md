@@ -1,6 +1,6 @@
 # Shopping list
 
-![appicon](https://user-images.githubusercontent.com/96004385/188332008-1741cb5a-f9ec-4150-9274-ab5b84a6ae90.png)
+![appicon](https://user-images.githubusercontent.com/96004385/194842853-3bf1bce9-14fc-4df6-b586-e09fff3ad7d0.png)
 
 ## Description
 Shopping list is an application to make your shopping easier.
