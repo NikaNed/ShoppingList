@@ -1,8 +1,6 @@
 package com.example.myshoppinglist.presentation
 
-import android.content.ContentValues
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +13,6 @@ import com.example.myshoppinglist.databinding.FragmentShopItemBinding
 import com.example.myshoppinglist.di.ViewModelFactory
 import com.example.myshoppinglist.domain.ShopItem
 import javax.inject.Inject
-import kotlin.concurrent.thread
 
 class ShopItemFragment : Fragment() {
 
@@ -143,45 +140,18 @@ class ShopItemFragment : Fragment() {
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
         binding.saveButton.setOnClickListener {
-            /*    viewModel.editShopItem(
+                viewModel.editShopItem(
                     binding.etName.text?.toString(),
                     binding.etCount.text?.toString()
-                )*/
-            thread {
-                val updateValues = ContentValues().apply {
-                    put(INSERT_ID, 0)
-                    put(INSERT_NAME, binding.etName.text?.toString())
-                    put(INSERT_COUNT, binding.etCount.text?.toString()?.toInt())
-                    put(INSERT_ENABLED, true)
-                }
-
-                val selectionArgs: Array<String> = arrayOf(shopItemId.toString())
-
-                context?.contentResolver?.update(
-                    Uri.parse("content://com.example.myshoppinglist/shop_item"),
-                    updateValues,
-                    null,
-                    selectionArgs)
-            }
+                )
         }
     }
 
     private fun launchAddMode() {
         binding.saveButton.setOnClickListener {
-            /* viewModel.addShopItem(
+             viewModel.addShopItem(
                  binding.etName.text?.toString(),
-                 binding.etCount.text?.toString())*/
-            thread {
-                context?.contentResolver?.insert(
-                    Uri.parse("content://com.example.myshoppinglist/shop_item"),
-                    ContentValues().apply {
-                        put(INSERT_ID, 0)
-                        put(INSERT_NAME, binding.etName.text?.toString())
-                        put(INSERT_COUNT, binding.etCount.text?.toString()?.toInt())
-                        put(INSERT_ENABLED, true)
-                    }
-                )
-            }
+                 binding.etCount.text?.toString())
         }
     }
 
@@ -200,10 +170,6 @@ class ShopItemFragment : Fragment() {
         private const val MODE_ADD = "mode_add"
         private const val SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_UNKNOWN = ""
-        const val INSERT_ID = "id"
-        const val INSERT_NAME = "name"
-        const val INSERT_COUNT = "count"
-        const val INSERT_ENABLED = "enabled"
 
         fun newInstanceAddItem(): ShopItemFragment {
             return ShopItemFragment().apply { // вернем экземпляр фрагмента с аргументами

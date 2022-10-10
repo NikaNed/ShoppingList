@@ -31,6 +31,8 @@
             android:clickable="true"
             android:contentDescription="@string/add_new_shop_item"
             android:focusable="true"
+            app:tint="@color/white"
+            app:backgroundTint="@color/blue_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline_middle"
             app:srcCompat="@drawable/ic_button_add" />

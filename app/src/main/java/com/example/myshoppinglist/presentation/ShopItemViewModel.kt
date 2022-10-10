@@ -82,6 +82,7 @@ class ShopItemViewModel @Inject constructor(
         return try {
             inputCount?.trim()?.toInt() ?: 0 // ?: - это элвис-оператор, а 0 - это значение по
             // умолчанию, если в строку ничего не ввели
+
         } catch (e: Exception) { // в случае ошибки тоже 0
             0
         }
