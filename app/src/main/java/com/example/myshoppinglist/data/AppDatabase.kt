@@ -8,15 +8,15 @@ import androidx.room.RoomDatabase
 @Database(entities = [ShopItemDbModel::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun shopListDao(): ShopListDao //возвращает реализацию интерфейса Dao
+    abstract fun shopListDao(): ShopListDao
 
     companion object {
-        private var INSTANCE: AppDatabase? = null //переменная экземпляра базы данных
-        private val LOCK = Any() //объект синхронизации
+        private var INSTANCE: AppDatabase? = null
+        private val LOCK = Any()
         private const val DB_NAME = "shop_item.db"
 
         fun getInstance(application: Application): AppDatabase {
-            INSTANCE?.let { //проверяем, если этой переменной уже присвоено значение, то возвращаем его
+            INSTANCE?.let {
                 return it
             }
             synchronized(LOCK) {

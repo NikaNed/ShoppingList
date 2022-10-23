@@ -5,15 +5,13 @@ import javax.inject.Inject
 
 class ShopListMapper @Inject constructor(){
 
-    fun mapEntityToDbModel(shopItem: ShopItem) = ShopItemDbModel( //метод преобразовывает сущность
-        //domain-слоя в модель БД
+    fun mapEntityToDbModel(shopItem: ShopItem) = ShopItemDbModel(
             id = shopItem.id,
             name = shopItem.name,
             count = shopItem.count,
             enabled = shopItem.enabled
         )
-    fun mapDbModelToEntity(shopItemDbModel: ShopItemDbModel) = ShopItem( //метод преобразовывает
-        // модель БД в сущность domain-слоя
+    fun mapDbModelToEntity(shopItemDbModel: ShopItemDbModel) = ShopItem(
         id = shopItemDbModel.id,
         name = shopItemDbModel.name,
         count = shopItemDbModel.count,
@@ -21,6 +19,6 @@ class ShopListMapper @Inject constructor(){
     )
 
     fun mapDbModelListToListEntity (list: List<ShopItemDbModel>) = list.map {
-        mapDbModelToEntity(it) //для каждого элемента коллекции вызовем метод
-    } //метод преобразовывает List объектов ShopItemDbModel в List объектов ShopItem
+        mapDbModelToEntity(it)
+    }
 }

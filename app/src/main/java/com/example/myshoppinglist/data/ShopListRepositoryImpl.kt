@@ -26,7 +26,7 @@ class ShopListRepositoryImpl @Inject constructor(
 
     override suspend fun getShopItem(shopItemId: Int): ShopItem {
         val dbModel = shopListDao.getShopItem(shopItemId)
-        return mapper.mapDbModelToEntity(dbModel) //возвращаем значение в виде объекта domain-слоя
+        return mapper.mapDbModelToEntity(dbModel)
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {

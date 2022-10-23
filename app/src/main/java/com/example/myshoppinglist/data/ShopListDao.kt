@@ -10,15 +10,14 @@ import androidx.room.Query
 @Dao
 interface ShopListDao {
 
-    @Query("SELECT*FROM shop_items") //запрос выбираем все из таблицы shop_items
-    fun getShopList(): LiveData<List<ShopItemDbModel>> //метод запрашивает данные из базы
+    @Query("SELECT*FROM shop_items")
+    fun getShopList(): LiveData<List<ShopItemDbModel>>
 
     @Query("SELECT*FROM shop_items")
     fun getShopListCursor(): Cursor
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addShopItem(shopItemDbModel: ShopItemDbModel) //метод не только добавляет элемент, но и
-    // редактирует его
+    suspend fun addShopItem(shopItemDbModel: ShopItemDbModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addShopItemProvider(shopItemDbModel: ShopItemDbModel)

@@ -19,9 +19,9 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
-        parseIntent() // проверяем параметры в intent
+        parseIntent()
         if (savedInstanceState == null) {
-            launchRightMode() // запускаем фрагмент в нужном режиме
+            launchRightMode()
         }
     }
 
@@ -47,14 +47,14 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
     }
 
     private fun launchRightMode() {
-        val fragment = when (screenMode) { // когда режим подходящий, получаем экземпляр фрагмента
-            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId) //возвращаем экземпляр фрагмента
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
             MODE_ADD -> ShopItemFragment.newInstanceAddItem()
             else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
-        supportFragmentManager.beginTransaction() // устанавливаем фрагмент в контейнер
-            .replace(R.id.shop_item_container, fragment) // добвляем фрагмент в данный контейнер
-            .commit() // запускает транзакцию на выполнение
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.shop_item_container, fragment)
+            .commit()
     }
 
     companion object {
@@ -73,13 +73,13 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
         fun newIntentEditItem(
             context: Context,
             ShopItemId: Int
-        ): Intent { //запускает экран в режиме редактирования
+        ): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)
             intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
             intent.putExtra(
                 EXTRA_SHOP_ITEM_ID,
                 ShopItemId
-            ) //обязательный параметр для редактирования – это id элемента
+            )
             return intent
         }
     }

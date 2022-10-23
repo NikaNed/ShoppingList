@@ -14,8 +14,7 @@ import com.example.myshoppinglist.domain.ShopItem
 class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
         ShopItemViewHolder>(ShopItemDiffCallback()) {
 
-    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null // функция принимает ShopItem и
-    // ничего не возращает
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
@@ -38,7 +37,7 @@ class ShopListAdapter : androidx.recyclerview.widget.ListAdapter<ShopItem,
         val binding = viewHolder.binding
         binding.root.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
-            true // можем вызвать функцию только в том случае, если переменная не равна null
+            true
         }
         binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(shopItem)

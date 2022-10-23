@@ -46,7 +46,7 @@ class ShopItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parseParams() //проверяем параметры
+        parseParams()
     }
 
     override fun onCreateView(
@@ -61,27 +61,27 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this,
-            viewModelFactory)[ShopItemViewModel::class.java] //инициализируем vM
+            viewModelFactory)[ShopItemViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        addTextChangedListener() //добавляем слушатели ввода текста
-        launchRightMode() //запускаем правильный режим экрана
-        observeViewModel() //подписываемся на все объекты viewModel
+        addTextChangedListener()
+        launchRightMode()
+        observeViewModel()
     }
 
     private fun parseParams() {
         val args =
-            requireArguments() //получаем переданные аргументы, если там будет null, то упадем
-        if (!args.containsKey(SCREEN_MODE)) { //если не содержится SCREEN_MODE, то падаем
+            requireArguments()
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException("Param screen mode absent")
         }
-        val mode = args.getString(SCREEN_MODE)//если содержится SCREEN_MODE
-        if (mode != MODE_ADD && mode != MODE_EDIT) { //но непонятный режим экрана, то падаем
+        val mode = args.getString(SCREEN_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
             throw RuntimeException("Unknown screen mode $mode")
         }
         screenMode = mode
-        if (screenMode == MODE_EDIT) { //если находимся в режиме редактирования
-            if (!args.containsKey(SHOP_ITEM_ID)) { //но не нашли SHOP_ITEM_ID, то падаем
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(SHOP_ITEM_ID)) {
                 throw RuntimeException("Param shop item id is absent")
             }
             shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINDED_ID)
@@ -172,9 +172,9 @@ class ShopItemFragment : Fragment() {
         private const val MODE_UNKNOWN = ""
 
         fun newInstanceAddItem(): ShopItemFragment {
-            return ShopItemFragment().apply { // вернем экземпляр фрагмента с аргументами
-                arguments = Bundle().apply { //вызывается arguments и
-                    putString(SCREEN_MODE, MODE_ADD) //у него устанавливается новое значение
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
                 }
             }
         }
