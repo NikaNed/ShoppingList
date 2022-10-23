@@ -17,11 +17,9 @@ class ShopItemViewModel @Inject constructor(
     private val editShopItemUseCase: EditShopItemUseCase
 ) : ViewModel() {
 
-    private val _errorInputName = MutableLiveData<Boolean>() /*можно работать с этой переменной из
-    ViewModel и можно устанавливать значения*/
-    val errorInputName: LiveData<Boolean> // из Activity будем подписываться на эту переменную
-        get() = _errorInputName // переопределяем get-ер, который будет возвращать значение перемен-
-    // ной _errorInputName
+    private val _errorInputName = MutableLiveData<Boolean>()
+    val errorInputName: LiveData<Boolean>
+        get() = _errorInputName
 
     private val _errorInputCount = MutableLiveData<Boolean>()
     val errorInputCount: LiveData<Boolean>
@@ -36,10 +34,10 @@ class ShopItemViewModel @Inject constructor(
         get() = _shouldCloseScreen
 
 
-    fun getShopItem(shopItemId: Int) { //принимает в качестве параметра shopItemId
+    fun getShopItem(shopItemId: Int) {
         viewModelScope.launch {
-            val item = getShopItemUseCase.getShopItem(shopItemId) // получаем элемент
-            _shopItem.value = item // устанавлием его в LiveData
+            val item = getShopItemUseCase.getShopItem(shopItemId)
+            _shopItem.value = item
         }
     }
 
@@ -47,9 +45,9 @@ class ShopItemViewModel @Inject constructor(
         val name = parseName(inputName)
         val count = parseCount(inputCount)
         val fieldsVailed = validateInput(name, count)
-        if (fieldsVailed) { // если поля валидные, то добаялем новый элемент
+        if (fieldsVailed) {
             viewModelScope.launch {
-                val shopItem = ShopItem(name, count, true) // вот он новый элемент
+                val shopItem = ShopItem(name, count, true)
                 addShopItemUseCase.addShopItem(shopItem)
                 finishWork()
             }
@@ -72,23 +70,19 @@ class ShopItemViewModel @Inject constructor(
         }
     }
 
-    private fun parseName(inputName: String?): String { //приводим строку ввода в нормальный вид
-        //принимает нулабельный тип, а возвращает ненулабельную строку
-        return inputName?.trim() ?: "" // если inputName не null, то обрезаем пробелы, если null,то
-        // возвращаем пустую строку
+    private fun parseName(inputName: String?): String {
+        return inputName?.trim() ?: ""
     }
 
     private fun parseCount(inputCount: String?): Int {
         return try {
-            inputCount?.trim()?.toInt() ?: 0 // ?: - это элвис-оператор, а 0 - это значение по
-            // умолчанию, если в строку ничего не ввели
-
-        } catch (e: Exception) { // в случае ошибки тоже 0
+            inputCount?.trim()?.toInt() ?: 0
+        } catch (e: Exception) {
             0
         }
     }
 
-    private fun validateInput(name: String, count: Int): Boolean { // проводим валидацию
+    private fun validateInput(name: String, count: Int): Boolean {
         var result = true
         if (name.isBlank()) {
             result = false
